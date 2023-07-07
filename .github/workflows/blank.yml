@@ -1,0 +1,24 @@
+name: Créer un secret de référentiel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_secret:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Créer le secret de référentiel
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const response = await octokit.actions.createOrUpdateRepoSecret({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            secret_name: 'MON_SECRET',
+            encrypted_value: Buffer.from('VALEUR_DU_SECRET').toString('base64')
+          });
+          console.log(response);
